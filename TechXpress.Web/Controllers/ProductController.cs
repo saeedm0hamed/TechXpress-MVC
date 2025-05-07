@@ -66,7 +66,6 @@ public class ProductController : Controller
             {
                 Id = productToAdd.Id,
                 ProductName = productToAdd.ProductName,
-                AuthorName = productToAdd.AuthorName,
                 Image = productToAdd.Image,
                 CategoryId = productToAdd.CategoryId,
                 Price = productToAdd.Price
@@ -110,7 +109,6 @@ public class ProductController : Controller
         {
             CategoryList = categorySelectList,
             ProductName = product.ProductName,
-            AuthorName = product.AuthorName,
             CategoryId = product.CategoryId,
             Price = product.Price,
             Image = product.Image
@@ -152,7 +150,6 @@ public class ProductController : Controller
             {
                 Id = productToUpdate.Id,
                 ProductName = productToUpdate.ProductName,
-                AuthorName = productToUpdate.AuthorName,
                 CategoryId = productToUpdate.CategoryId,
                 Price = productToUpdate.Price,
                 Image = productToUpdate.Image

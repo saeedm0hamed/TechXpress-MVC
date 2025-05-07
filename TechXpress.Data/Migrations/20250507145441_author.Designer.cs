@@ -12,8 +12,8 @@ using TechXpress.Data;
 namespace TechXpress.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250507141724_haha")]
-    partial class haha
+    [Migration("20250507145441_author")]
+    partial class author
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -403,11 +403,6 @@ namespace TechXpress.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AuthorName")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -415,6 +410,7 @@ namespace TechXpress.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
+                        .HasMaxLength(40)
                         .HasColumnType("float");
 
                     b.Property<string>("ProductName")
