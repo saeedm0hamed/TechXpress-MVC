@@ -20,14 +20,26 @@
         display: block;
         margin: 0 auto;
     }
+
+    .filter-section {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .price-range-slider {
+        width: 100%;
+    }
 </style>
 
-<div class="my-2">
-    <form asp-action="Index" class="row row-cols-lg-auto g-3 align-items-center">
-        <div class="col-12">
-            <label class="visually-hidden" for="categoryId">Categories</label>
+<div class="filter-section">
+    <form asp-action="Index" method="get" class="row g-3">
+        <!-- Search and Category Filters (existing) -->
+        <div class="col-md-3">
+            <label class="form-label" for="categoryId">Category</label>
             <select class="form-select" id="categoryId" name="categoryId">
-                <option selected>Category</option>
+                <option value="">All Categories</option>
                 @foreach (var category in Model.Categorys)
                 {
                     <option selected="@(category.Id == Model.CategoryId)" value="@category.Id">@category.CategoryName</option>
@@ -35,22 +47,45 @@
             </select>
         </div>
 
-        <div class="col-12">
-            <label class="visually-hidden" for="sterm">Search by title</label>
+        <div class="col-md-3">
+            <label class="form-label" for="sterm">Search</label>
             <div class="input-group">
-                <div class="input-group-text"></div>
-                <input type="text" class="form-control" value="@Model.STerm" id="sterm" name="sterm" placeholder="Search by title">
+                <input type="text" class="form-control" value="@Model.STerm" id="sterm" name="sterm" placeholder="Product name">
             </div>
         </div>
 
+        <!-- New Price Range Filter -->
+        <div class="col-md-3">
+            <label class="form-label">Price Range</label>
+            <div class="d-flex align-items-center">
+                <input type="number" step="0.01" class="form-control" name="minPrice"
+                       placeholder="Min" value="@Model.MinPrice">
+                <span class="mx-2">to</span>
+                <input type="number" step="0.01" class="form-control" name="maxPrice"
+                       placeholder="Max" value="@Model.MaxPrice">
+            </div>
+        </div>
+
+        <!-- New Sort By Dropdown -->
+        <div class="col-md-3">
+            <label class="form-label" for="sortBy">Sort By</label>
+            <select class="form-select" id="sortBy" name="sortBy">
+                <option value="">Default</option>
+                <option selected="@(Model.SortBy == "name_asc")" value="name_asc">Name (A-Z)</option>
+                <option selected="@(Model.SortBy == "name_desc")" value="name_desc">Name (Z-A)</option>
+                <option selected="@(Model.SortBy == "price_asc")" value="price_asc">Price (Low to High)</option>
+                <option selected="@(Model.SortBy == "price_desc")" value="price_desc">Price (High to Low)</option>
+            </select>
+        </div>
+
         <div class="col-12">
-            <button type="submit" class="btn btn-primary">Search</button>
-            <a href="/Home/Index" class="btn btn-dark">Reset</a>
+            <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+            <a href="/Home/Index" class="btn btn-outline-secondary">Reset</a>
         </div>
     </form>
 </div>
 
-<!-- Product Details Modal -->
+<!-- Product Details Modal (existing) -->
 <div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -69,6 +104,7 @@
     </div>
 </div>
 
+<!-- Product Grid (existing) -->
 <div class="w-100 mt-4 d-flex flex-wrap">
     @foreach (var product in Model.Products)
     {
@@ -116,9 +152,33 @@
     <!-- Add these scripts before your custom scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <!-- Add noUiSlider for price range -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
 
     <script>
-        // Configure Toastr
+        // Initialize price range slider
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceSlider = document.getElementById('priceRangeSlider');
+            if (priceSlider) {
+                noUiSlider.create(priceSlider, {
+                    start: [@(Model.MinPrice ?? 0), @(Model.MaxPrice ?? 1000)],
+                    connect: true,
+                    range: {
+                        'min': 0,
+                        'max': 1000
+                    },
+                    step: 10
+                });
+
+                priceSlider.noUiSlider.on('update', function(values, handle) {
+                    document.getElementById('minPrice').value = Math.round(values[0]);
+                    document.getElementById('maxPrice').value = Math.round(values[1]);
+                });
+            }
+        });
+
+        // Existing Toastr and add to cart functions
         toastr.options = {
             positionClass: "toast-top-right",
             preventDuplicates: true,
@@ -127,9 +187,8 @@
             closeButton: true
         };
 
-        // Your existing add to cart function with Toastr
         async function add(productId) {
-            var usernameEl = document.getElementById("username");
+             var usernameEl = document.getElementById("username");
             if(usernameEl == null) {
                 window.location.href = "/Identity/Account/Login";
                 return;
@@ -154,7 +213,6 @@
             }
         }
 
-        // Product details modal function
         function showProductDetails(productId) {
             // Find the product card
             const productCard = document.querySelector(`[data-product-id="${productId}"]`).closest('.card');

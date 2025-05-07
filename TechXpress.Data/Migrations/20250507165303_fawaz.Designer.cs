@@ -12,8 +12,8 @@ using TechXpress.Data;
 namespace TechXpress.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250507145441_author")]
-    partial class author
+    [Migration("20250507165303_fawaz")]
+    partial class fawaz
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

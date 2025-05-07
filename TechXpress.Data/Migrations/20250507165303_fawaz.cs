@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TechXpress.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class author : Migration
+    public partial class fawaz : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
