@@ -1,13 +1,31 @@
 ﻿@model ProductDisplayModel
 @{
-
 }
 
+<!-- Add these to your _Layout.cshtml head section -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+<style>
+    .toast-top-right {
+        top: 70px;
+        right: 12px;
+    }
+
+    .toast-success {
+        background-color: #28a745 !important;
+    }
+
+    .product-details-img {
+        max-height: 300px;
+        width: auto;
+        display: block;
+        margin: 0 auto;
+    }
+</style>
 
 <div class="my-2">
     <form asp-action="Index" class="row row-cols-lg-auto g-3 align-items-center">
         <div class="col-12">
-            <label class="visually-hidden" for="categoryId">Categorys</label>
+            <label class="visually-hidden" for="categoryId">Categories</label>
             <select class="form-select" id="categoryId" name="categoryId">
                 <option selected>Category</option>
                 @foreach (var category in Model.Categorys)
@@ -34,7 +52,7 @@
 
 <!-- Product Details Modal -->
 <div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="productDetailsModalLabel">Product Details</h5>
@@ -45,6 +63,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="modalAddToCartBtn" class="btn btn-primary">Add to Cart</button>
             </div>
         </div>
     </div>
@@ -56,19 +75,17 @@
         <div class="card mx-3 mb-4" style="width: 11rem;">
             @if (string.IsNullOrEmpty(product.Image))
             {
-                <img style="width:100%;height:180px; object-fit: contain" src="/images/NoImage.png" class="card-img-top" alt="...">
+                <img style="width:100%;height:180px; object-fit: contain" src="/images/NoImage.png" class="card-img-top" alt="@product.ProductName">
             }
             else
             {
-                <img style="width:100%;height:180px; object-fit: contain" src="/images/@product.Image" class="card-img-top" alt="...">
+                <img style="width:100%;height:180px; object-fit: contain" src="/images/@product.Image" class="card-img-top" alt="@product.ProductName">
             }
             <div class="card-body d-flex flex-column" style="height: 200px;">
                 <div>
-                    <h5 class="card-title" style="font-size: 1rem; height: 2.5rem; overflow: hidden; text-overflow: ellipsis;">
-                        <a href="javascript:void(0);" onclick="showProductDetails(@product.Id, event)"
-                           style="text-decoration: none; color: inherit; cursor: pointer;">
-                            @product.ProductName
-                        </a>
+                    <h5 class="card-title" style="font-size: 1rem; height: 2.5rem; overflow: hidden; text-overflow: ellipsis; cursor: pointer;"
+                        onclick="showProductDetails(@product.Id)">
+                        @product.ProductName
                     </h5>
                     <p class="card-text mb-2">
                         <small><b>Category: </b>@product.CategoryName</small><br />
@@ -95,28 +112,22 @@
     }
 </div>
 
-
 @section Scripts {
+    <!-- Add these scripts before your custom scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
     <script>
-        // Configure Toastr defaults (put this at the top of your scripts)
+        // Configure Toastr
         toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": true,
-            "progressBar": true,
-            "positionClass": "toast-bottom-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "3000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
+            positionClass: "toast-top-right",
+            preventDuplicates: true,
+            progressBar: true,
+            timeOut: 2000,
+            closeButton: true
         };
 
+        // Your existing add to cart function with Toastr
         async function add(productId) {
             var usernameEl = document.getElementById("username");
             if(usernameEl == null) {
@@ -131,93 +142,76 @@
                     var cartCountEl = document.getElementById("cartCount");
                     cartCountEl.innerHTML = result;
 
-                    // Show success toast
-                    toastr.success('Item added to cart successfully!', '', {
-                        timeOut: 2000,
-                        positionClass: "toast-bottom-right"
-                    });
-
+                    toastr.success('Product added to cart successfully!');
                     window.location.href = "#cartCount";
                 } else {
-                    // Show error toast if response isn't 200
-                    toastr.error('Failed to add item to cart', '', {
-                        timeOut: 2000
-                    });
+                    toastr.error('Failed to add product to cart');
                 }
             }
             catch (err) {
                 console.log(err);
-                // Show error toast on exception
-                toastr.error('An error occurred while adding to cart', '', {
-                    timeOut: 2000
-                });
+                toastr.error('An error occurred while adding to cart');
             }
         }
 
-        // New product details function with event handling improvements
-        function showProductDetails(productId, event) {
-            // Prevent the click event from bubbling up to parent elements
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
+        // Product details modal function
+        function showProductDetails(productId) {
+            // Find the product card
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`).closest('.card');
 
-            // Find the product card - more robust selector
-            const productCard = document.querySelector(`.card [data-product-id="${productId}"]`)?.closest('.card');
-
-            if (!productCard) return;
-
-            // Extract details from the card
+            // Extract product details
             const productName = productCard.querySelector('.card-title').textContent.trim();
             const imageSrc = productCard.querySelector('.card-img-top').src;
-            const category = productCard.querySelector('p.card-text b:nth-of-type(1)').nextSibling.textContent.trim();
-            const price = productCard.querySelector('p.card-text b:nth-of-type(2)').nextSibling.textContent.trim();
-            const quantity = productCard.querySelector('p.card-text b:nth-of-type(3)').nextSibling.textContent.trim();
+            const category = productCard.querySelector('p.card-text small:nth-of-type(1)').textContent.replace('Category: ', '').trim();
+            const price = productCard.querySelector('p.card-text small:nth-of-type(2)').textContent.replace('Price: ', '').trim();
+            const quantity = productCard.querySelector('p.card-text small:nth-of-type(3)').textContent.replace('Quantity: ', '').trim();
+
+            // Generate product description (lorem ipsum)
+            const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
             // Build modal content
-               const modalContent = `
-            <div class="text-center mb-3">
-                <img src="${imageSrc}" style="max-height: 200px; max-width: 100%;" alt="${productName}">
-            </div>
-            <h4>${productName}</h4>
-            <p><strong>Category:</strong> ${category}</p>
-            <p><strong>Price:</strong> ${price}</p>
-            <p><strong>Quantity Available:</strong> ${quantity}</p>
-            <p><strong>Description:</strong>
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."</p>
-
-            <p><strong>Key Features:</strong>
-            <ul>
-            <li>Lorem ipsum dolor sit amet</li>
-            <li>Consectetur adipiscing elit</li>
-            <li>Sed do eiusmod tempor</li>
-            </ul>
-            <p><strong>Technical Specifications:</strong>
-            <ul>
-            <li>Dimension: 12.5" x 8.3" x 0.6" (Lorem ipsum)</li>
-            <li>Weight: 2.86 lbs (Dolor sit amet)</li>
-            <li>Material: Aluminum alloy (Consectetur)</li>
-            <li>Color options: Silver, Space Gray (Adipiscing elit)</li>
-            </ul>
-            <hr>
-                <button onclick="add(${productId}); const modal = bootstrap.Modal.getInstance(document.getElementById('productDetailsModal')); modal.hide();"
-                class="btn btn-primary w-100">
-            Add to Cart
-        </button>
-        `;
+            const modalContent = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="${imageSrc}" class="product-details-img img-fluid" alt="${productName}">
+                    </div>
+                    <div class="col-md-6">
+                        <h4>${productName}</h4>
+                        <p><strong>Category:</strong> ${category}</p>
+                        <p><strong>Price:</strong> ${price}</p>
+                        <p><strong>Availability:</strong> ${quantity > 0 ? 'In Stock' : 'Out of Stock'}</p>
+                        <hr>
+                        <h5>Product Description</h5>
+                        <p>${description}</p>
+                        <h5 class="mt-3">Features</h5>
+                        <ul>
+                            <li>High-quality materials</li>
+                            <li>Manufacturer warranty</li>
+                            <li>Easy to use</li>
+                            <li>Energy efficient</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
 
             // Set modal content
             document.getElementById('productDetailsContent').innerHTML = modalContent;
+
+            // Set up Add to Cart button in modal
+            const addToCartBtn = document.getElementById('modalAddToCartBtn');
+            if (parseInt(quantity) > 0) {
+                addToCartBtn.style.display = 'block';
+                addToCartBtn.onclick = function() {
+                    add(productId);
+                    bootstrap.Modal.getInstance(document.getElementById('productDetailsModal')).hide();
+                };
+            } else {
+                addToCartBtn.style.display = 'none';
+            }
 
             // Show modal
             const modal = new bootstrap.Modal(document.getElementById('productDetailsModal'));
             modal.show();
         }
-
-        // Modify your product card HTML to include data attributes
-        // This should be in your foreach loop where you generate cards:
-        // <button type="button" onclick="add(${product.Id})" data-product-id="${product.Id}" class="btn btn-primary">Add to cart</button>
     </script>
 }
-
-
