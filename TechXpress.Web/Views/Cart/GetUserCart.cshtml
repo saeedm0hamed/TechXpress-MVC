@@ -13,7 +13,7 @@
                 <th>Product</th>
                 <th>Image</th>
                 <th>Category</th>
-                <th>Unit Price(INR)</th>
+                <th>Unit Price(USD)</th>
                 <th>Total Price</th>
                 <th>Action</th>
             </tr>
@@ -52,7 +52,7 @@
         </table>
 
         <div class="my-2">
-            <h5>Total(INR): </h5>
+            <h5>Total(USD): </h5>
             @(Model.CartDetails.Select(item => item.Product.Price * item.Quantity).Sum())
         </div>
 

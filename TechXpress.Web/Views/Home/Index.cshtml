@@ -2,6 +2,8 @@
 @{
 
 }
+
+
 <div class="my-2">
     <form asp-action="Index" class="row row-cols-lg-auto g-3 align-items-center">
         <div class="col-12">
@@ -19,7 +21,7 @@
             <label class="visually-hidden" for="sterm">Search by title</label>
             <div class="input-group">
                 <div class="input-group-text"></div>
-                <input type="text" class="form-control" value="@Model.STerm" id="sterm" name="sterm" placeholder="Sarch by title">
+                <input type="text" class="form-control" value="@Model.STerm" id="sterm" name="sterm" placeholder="Search by title">
             </div>
         </div>
 
@@ -30,69 +32,191 @@
     </form>
 </div>
 
-    <div class="w-100 mt-4 d-flex flex-wrap ">
-        @foreach (var product in Model.Products)
-        {
-            <div class="card mx-3 mb-4" style="width: 11rem;">
-                @if (string.IsNullOrEmpty(product.Image))
-                {
-                    <img style="width:100%;height:180px" src="/images/NoImage.png" class="card-img-top" alt="...">
+<!-- Product Details Modal -->
+<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productDetailsModalLabel">Product Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="productDetailsContent">
+                <!-- Content will be loaded here dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-                }
-                else
-                {
-                    <img style="width:100%;height:180px" src="/images/@product.Image" class="card-img-top" alt="...">
-                }
-                <div class="card-body">
-                    <h5 class="card-title">@product.ProductName</h5>
-                    <p class="card-text">
-                        <b>Category: </b>@product.CategoryName <br />
-                        <b>Price: </b>@product.Price <br />
-                        <b>Quantity: </b>@product.Quantity <br />
+<div class="w-100 mt-4 d-flex flex-wrap">
+    @foreach (var product in Model.Products)
+    {
+        <div class="card mx-3 mb-4" style="width: 11rem;">
+            @if (string.IsNullOrEmpty(product.Image))
+            {
+                <img style="width:100%;height:180px; object-fit: contain" src="/images/NoImage.png" class="card-img-top" alt="...">
+            }
+            else
+            {
+                <img style="width:100%;height:180px; object-fit: contain" src="/images/@product.Image" class="card-img-top" alt="...">
+            }
+            <div class="card-body d-flex flex-column" style="height: 200px;">
+                <div>
+                    <h5 class="card-title" style="font-size: 1rem; height: 2.5rem; overflow: hidden; text-overflow: ellipsis;">
+                        <a href="javascript:void(0);" onclick="showProductDetails(@product.Id, event)"
+                           style="text-decoration: none; color: inherit; cursor: pointer;">
+                            @product.ProductName
+                        </a>
+                    </h5>
+                    <p class="card-text mb-2">
+                        <small><b>Category: </b>@product.CategoryName</small><br />
+                        <small><b>Price: </b>@product.Price$</small><br />
+                        <small><b>Quantity: </b>@product.Quantity</small>
                     </p>
+                </div>
+                <div class="mt-auto">
                     @if (product.Quantity > 0)
                     {
-                        <button type="button" onclick="add(@product.Id)" class="btn btn-primary">Add to cart</button>
+                        <button type="button" onclick="add(@product.Id)"
+                                data-product-id="@product.Id"
+                                class="btn btn-primary w-100">
+                            Add to cart
+                        </button>
                     }
                     else
                     {
-                        <span style="border: 1px solid;padding: 5px 8px;color: red;border-radius: 5px;">Out of stock</span>
+                        <span style="border: 1px solid;padding: 5px 8px;color: red;border-radius: 5px; display: block; text-align: center;">Out of stock</span>
                     }
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
+</div>
 
 
-
-
-
-
-
-@section Scripts{
+@section Scripts {
     <script>
+        // Configure Toastr defaults (put this at the top of your scripts)
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
         async function add(productId) {
-             var usernameEl = document.getElementById("username");
-        if(usernameEl==null){
-            window.location.href = "/Identity/Account/Login";
-          //var username=usernameEl.innerText;
-          //  if(username.length<1){
-          //      window.location.href="/Identity/Account/Login";
-          //  }
-        }
+            var usernameEl = document.getElementById("username");
+            if(usernameEl == null) {
+                window.location.href = "/Identity/Account/Login";
+                return;
+            }
+
             try {
                 var response = await fetch(`/Cart/AddItem?productId=${productId}`);
                 if (response.status == 200) {
                     var result = await response.json();
                     var cartCountEl = document.getElementById("cartCount");
                     cartCountEl.innerHTML = result;
+
+                    // Show success toast
+                    toastr.success('Item added to cart successfully!', '', {
+                        timeOut: 2000,
+                        positionClass: "toast-bottom-right"
+                    });
+
                     window.location.href = "#cartCount";
+                } else {
+                    // Show error toast if response isn't 200
+                    toastr.error('Failed to add item to cart', '', {
+                        timeOut: 2000
+                    });
                 }
             }
             catch (err) {
                 console.log(err);
+                // Show error toast on exception
+                toastr.error('An error occurred while adding to cart', '', {
+                    timeOut: 2000
+                });
             }
         }
+
+        // New product details function with event handling improvements
+        function showProductDetails(productId, event) {
+            // Prevent the click event from bubbling up to parent elements
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            // Find the product card - more robust selector
+            const productCard = document.querySelector(`.card [data-product-id="${productId}"]`)?.closest('.card');
+
+            if (!productCard) return;
+
+            // Extract details from the card
+            const productName = productCard.querySelector('.card-title').textContent.trim();
+            const imageSrc = productCard.querySelector('.card-img-top').src;
+            const category = productCard.querySelector('p.card-text b:nth-of-type(1)').nextSibling.textContent.trim();
+            const price = productCard.querySelector('p.card-text b:nth-of-type(2)').nextSibling.textContent.trim();
+            const quantity = productCard.querySelector('p.card-text b:nth-of-type(3)').nextSibling.textContent.trim();
+
+            // Build modal content
+               const modalContent = `
+            <div class="text-center mb-3">
+                <img src="${imageSrc}" style="max-height: 200px; max-width: 100%;" alt="${productName}">
+            </div>
+            <h4>${productName}</h4>
+            <p><strong>Category:</strong> ${category}</p>
+            <p><strong>Price:</strong> ${price}</p>
+            <p><strong>Quantity Available:</strong> ${quantity}</p>
+            <p><strong>Description:</strong>
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."</p>
+
+            <p><strong>Key Features:</strong>
+            <ul>
+            <li>Lorem ipsum dolor sit amet</li>
+            <li>Consectetur adipiscing elit</li>
+            <li>Sed do eiusmod tempor</li>
+            </ul>
+            <p><strong>Technical Specifications:</strong>
+            <ul>
+            <li>Dimension: 12.5" x 8.3" x 0.6" (Lorem ipsum)</li>
+            <li>Weight: 2.86 lbs (Dolor sit amet)</li>
+            <li>Material: Aluminum alloy (Consectetur)</li>
+            <li>Color options: Silver, Space Gray (Adipiscing elit)</li>
+            </ul>
+            <hr>
+                <button onclick="add(${productId}); const modal = bootstrap.Modal.getInstance(document.getElementById('productDetailsModal')); modal.hide();"
+                class="btn btn-primary w-100">
+            Add to Cart
+        </button>
+        `;
+
+            // Set modal content
+            document.getElementById('productDetailsContent').innerHTML = modalContent;
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('productDetailsModal'));
+            modal.show();
+        }
+
+        // Modify your product card HTML to include data attributes
+        // This should be in your foreach loop where you generate cards:
+        // <button type="button" onclick="add(${product.Id})" data-product-id="${product.Id}" class="btn btn-primary">Add to cart</button>
     </script>
 }
 
