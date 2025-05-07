@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TechXpress.Data.Models.DTOs;
+using TechXpress.Data.Models.ViewModels;
 using TechXpress.Services.Repositories;
 
 namespace TechXpress.Web.Controllers

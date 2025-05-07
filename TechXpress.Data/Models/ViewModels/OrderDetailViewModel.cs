@@ -1,6 +1,6 @@
-﻿namespace TechXpress.Data.Models.DTOs;
+﻿namespace TechXpress.Data.Models.ViewModels;
 
-public class OrderDetailModalDTO
+public class OrderDetailViewModel
 {
     public string DivId { get; set; }
     public IEnumerable<OrderDetail> OrderDetail { get; set; }

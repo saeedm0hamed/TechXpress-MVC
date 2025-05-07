@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TechXpress.Data.Models.DTOs
+namespace TechXpress.Data.Models.ViewModels
 {
-    public class StockDTO
+    public class StockViewModel
     {
         public int ProductId { get; set; }
 

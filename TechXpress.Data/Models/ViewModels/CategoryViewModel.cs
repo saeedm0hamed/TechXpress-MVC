@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TechXpress.Data.Models.DTOs
+namespace TechXpress.Data.Models.ViewModels
 {
-    public class CategoryDTO
+    public class CategoryViewModel
     {
         public int Id { get; set; }
 

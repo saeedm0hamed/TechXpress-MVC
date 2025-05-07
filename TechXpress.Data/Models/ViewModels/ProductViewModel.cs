@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace TechXpress.Data.Models.DTOs;
-public class ProductDTO
+namespace TechXpress.Data.Models.ViewModels;
+public class ProductViewModel
 {
     public int Id { get; set; }
 

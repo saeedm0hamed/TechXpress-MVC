@@ -12,8 +12,8 @@ using TechXpress.Data;
 namespace TechXpress.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250507111936_fwaz")]
-    partial class fwaz
+    [Migration("20250507141724_haha")]
+    partial class haha
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,6 +223,26 @@ namespace TechXpress.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TechXpress.Data.Models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Carts");
+                });
+
             modelBuilder.Entity("TechXpress.Data.Models.CartDetail", b =>
                 {
                     b.Property<int>("Id")
@@ -231,28 +251,28 @@ namespace TechXpress.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Quantity")
+                    b.Property<int>("CartId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShoppingCartId")
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
-                    b.Property<int>("productId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ShoppingCartId");
+                    b.HasIndex("CartId");
 
-                    b.HasIndex("productId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("CartDetail");
                 });
 
-            modelBuilder.Entity("TechXpress.Data.Models.Genre", b =>
+            modelBuilder.Entity("TechXpress.Data.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -260,14 +280,14 @@ namespace TechXpress.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("GenreName")
+                    b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("TechXpress.Data.Models.Order", b =>
@@ -336,20 +356,20 @@ namespace TechXpress.Data.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
-                    b.Property<int>("productId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("productId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderDetail");
                 });
@@ -375,49 +395,7 @@ namespace TechXpress.Data.Migrations
                     b.ToTable("OrderStatus");
                 });
 
-            modelBuilder.Entity("TechXpress.Data.Models.ShoppingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShoppingCart");
-                });
-
-            modelBuilder.Entity("TechXpress.Data.Models.Stock", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("productId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("productId")
-                        .IsUnique();
-
-                    b.ToTable("Stock");
-                });
-
-            modelBuilder.Entity("TechXpress.Data.Models.product", b =>
+            modelBuilder.Entity("TechXpress.Data.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -430,7 +408,7 @@ namespace TechXpress.Data.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<int>("GenreId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Image")
@@ -439,16 +417,38 @@ namespace TechXpress.Data.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<string>("productName")
+                    b.Property<string>("ProductName")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GenreId");
+                    b.HasIndex("CategoryId");
 
-                    b.ToTable("product");
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("TechXpress.Data.Models.Stock", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("Stock");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -504,21 +504,21 @@ namespace TechXpress.Data.Migrations
 
             modelBuilder.Entity("TechXpress.Data.Models.CartDetail", b =>
                 {
-                    b.HasOne("TechXpress.Data.Models.ShoppingCart", "ShoppingCart")
+                    b.HasOne("TechXpress.Data.Models.Cart", "Cart")
                         .WithMany("CartDetails")
-                        .HasForeignKey("ShoppingCartId")
+                        .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TechXpress.Data.Models.product", "product")
+                    b.HasOne("TechXpress.Data.Models.Product", "Product")
                         .WithMany("CartDetail")
-                        .HasForeignKey("productId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ShoppingCart");
+                    b.Navigation("Cart");
 
-                    b.Navigation("product");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TechXpress.Data.Models.Order", b =>
@@ -540,42 +540,47 @@ namespace TechXpress.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TechXpress.Data.Models.product", "product")
+                    b.HasOne("TechXpress.Data.Models.Product", "Product")
                         .WithMany("OrderDetail")
-                        .HasForeignKey("productId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
 
-                    b.Navigation("product");
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("TechXpress.Data.Models.Product", b =>
+                {
+                    b.HasOne("TechXpress.Data.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("TechXpress.Data.Models.Stock", b =>
                 {
-                    b.HasOne("TechXpress.Data.Models.product", "product")
+                    b.HasOne("TechXpress.Data.Models.Product", "Product")
                         .WithOne("Stock")
-                        .HasForeignKey("TechXpress.Data.Models.Stock", "productId")
+                        .HasForeignKey("TechXpress.Data.Models.Stock", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("product");
+                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TechXpress.Data.Models.product", b =>
+            modelBuilder.Entity("TechXpress.Data.Models.Cart", b =>
                 {
-                    b.HasOne("TechXpress.Data.Models.Genre", "Genre")
-                        .WithMany("products")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Genre");
+                    b.Navigation("CartDetails");
                 });
 
-            modelBuilder.Entity("TechXpress.Data.Models.Genre", b =>
+            modelBuilder.Entity("TechXpress.Data.Models.Category", b =>
                 {
-                    b.Navigation("products");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("TechXpress.Data.Models.Order", b =>
@@ -583,12 +588,7 @@ namespace TechXpress.Data.Migrations
                     b.Navigation("OrderDetail");
                 });
 
-            modelBuilder.Entity("TechXpress.Data.Models.ShoppingCart", b =>
-                {
-                    b.Navigation("CartDetails");
-                });
-
-            modelBuilder.Entity("TechXpress.Data.Models.product", b =>
+            modelBuilder.Entity("TechXpress.Data.Models.Product", b =>
                 {
                     b.Navigation("CartDetail");
 

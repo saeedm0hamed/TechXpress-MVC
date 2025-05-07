@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TechXpress.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class fwaz : Migration
+    public partial class haha : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,6 +51,20 @@ namespace TechXpress.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Category",
                 columns: table => new
                 {
@@ -75,20 +89,6 @@ namespace TechXpress.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderStatus", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ShoppingCart",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ShoppingCart", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,12 +198,12 @@ namespace TechXpress.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "product",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    productName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     AuthorName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -211,9 +211,9 @@ namespace TechXpress.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_product", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_product_Category_CategoryId",
+                        name: "FK_Products_Category_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Category",
                         principalColumn: "Id",
@@ -254,8 +254,8 @@ namespace TechXpress.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ShoppingCartId = table.Column<int>(type: "int", nullable: false),
-                    productId = table.Column<int>(type: "int", nullable: false),
+                    CartId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<double>(type: "float", nullable: false)
                 },
@@ -263,15 +263,15 @@ namespace TechXpress.Data.Migrations
                 {
                     table.PrimaryKey("PK_CartDetail", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartDetail_ShoppingCart_ShoppingCartId",
-                        column: x => x.ShoppingCartId,
-                        principalTable: "ShoppingCart",
+                        name: "FK_CartDetail_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CartDetail_product_productId",
-                        column: x => x.productId,
-                        principalTable: "product",
+                        name: "FK_CartDetail_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -282,16 +282,16 @@ namespace TechXpress.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    productId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Stock", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Stock_product_productId",
-                        column: x => x.productId,
-                        principalTable: "product",
+                        name: "FK_Stock_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -303,7 +303,7 @@ namespace TechXpress.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    productId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<double>(type: "float", nullable: false)
                 },
@@ -317,9 +317,9 @@ namespace TechXpress.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderDetail_product_productId",
-                        column: x => x.productId,
-                        principalTable: "product",
+                        name: "FK_OrderDetail_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -364,14 +364,14 @@ namespace TechXpress.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartDetail_productId",
+                name: "IX_CartDetail_CartId",
                 table: "CartDetail",
-                column: "productId");
+                column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartDetail_ShoppingCartId",
+                name: "IX_CartDetail_ProductId",
                 table: "CartDetail",
-                column: "ShoppingCartId");
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_OrderStatusId",
@@ -384,19 +384,19 @@ namespace TechXpress.Data.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetail_productId",
+                name: "IX_OrderDetail_ProductId",
                 table: "OrderDetail",
-                column: "productId");
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_product_CategoryId",
-                table: "product",
+                name: "IX_Products_CategoryId",
+                table: "Products",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Stock_productId",
+                name: "IX_Stock_ProductId",
                 table: "Stock",
-                column: "productId",
+                column: "ProductId",
                 unique: true);
         }
 
@@ -434,13 +434,13 @@ namespace TechXpress.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "ShoppingCart");
+                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "Order");
 
             migrationBuilder.DropTable(
-                name: "product");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "OrderStatus");

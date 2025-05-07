@@ -32,12 +32,12 @@ public class ProductController : Controller
             Text = category.CategoryName,
             Value = category.Id.ToString(),
         });
-        ProductDTO productToAdd = new() { CategoryList = categorySelectList };
+        ProductViewModel productToAdd = new() { CategoryList = categorySelectList };
         return View(productToAdd);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddProduct(ProductDTO productToAdd)
+    public async Task<IActionResult> AddProduct(ProductViewModel productToAdd)
     {
         var categorySelectList = (await _categoryRepo.GetCategorys()).Select(category => new SelectListItem
         {
@@ -61,7 +61,7 @@ public class ProductController : Controller
                 string imageName = await _fileService.SaveFile(productToAdd.ImageFile, allowedExtensions);
                 productToAdd.Image = imageName;
             }
-            // manual mapping of ProductDTO -> Product
+            // manual mapping of ProductViewModel -> Product
             Product product = new()
             {
                 Id = productToAdd.Id,
@@ -106,7 +106,7 @@ public class ProductController : Controller
             Value = category.Id.ToString(),
             Selected = category.Id == product.CategoryId
         });
-        ProductDTO productToUpdate = new()
+        ProductViewModel productToUpdate = new()
         {
             CategoryList = categorySelectList,
             ProductName = product.ProductName,
@@ -119,7 +119,7 @@ public class ProductController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateProduct(ProductDTO productToUpdate)
+    public async Task<IActionResult> UpdateProduct(ProductViewModel productToUpdate)
     {
         var categorySelectList = (await _categoryRepo.GetCategorys()).Select(category => new SelectListItem
         {
@@ -147,7 +147,7 @@ public class ProductController : Controller
                 oldImage = productToUpdate.Image;
                 productToUpdate.Image = imageName;
             }
-            // manual mapping of ProductDTO -> Product
+            // manual mapping of ProductViewModel -> Product
             Product product = new()
             {
                 Id = productToUpdate.Id,

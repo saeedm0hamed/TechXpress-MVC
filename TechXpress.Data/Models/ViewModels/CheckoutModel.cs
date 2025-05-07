@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TechXpress.Data.Models.DTOs;
+namespace TechXpress.Data.Models.ViewModels;
 
 public class CheckoutModel
 {

@@ -25,7 +25,7 @@ namespace TechXpress.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory(CategoryDTO category)
+        public async Task<IActionResult> AddCategory(CategoryViewModel category)
         {
             if (!ModelState.IsValid)
             {
@@ -51,7 +51,7 @@ namespace TechXpress.Web.Controllers
             var category = await _categoryRepo.GetCategoryById(id);
             if (category is null)
                 throw new InvalidOperationException($"Category with id: {id} does not found");
-            var categoryToUpdate = new CategoryDTO
+            var categoryToUpdate = new CategoryViewModel
             {
                 Id = category.Id,
                 CategoryName = category.CategoryName
@@ -60,7 +60,7 @@ namespace TechXpress.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateCategory(CategoryDTO categoryToUpdate)
+        public async Task<IActionResult> UpdateCategory(CategoryViewModel categoryToUpdate)
         {
             if (!ModelState.IsValid)
             {

@@ -22,7 +22,7 @@ namespace TechXpress.Web.Controllers
         public async Task<IActionResult> ManangeStock(int productId)
         {
             var existingStock = await _stockRepo.GetStockByProductId(productId);
-            var stock = new StockDTO
+            var stock = new StockViewModel
             {
                 ProductId = productId,
                 Quantity = existingStock != null
@@ -32,7 +32,7 @@ namespace TechXpress.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ManangeStock(StockDTO stock)
+        public async Task<IActionResult> ManangeStock(StockViewModel stock)
         {
             if (!ModelState.IsValid)
                 return View(stock);

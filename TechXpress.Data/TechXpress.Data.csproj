@@ -8,15 +8,12 @@
 
   <ItemGroup>
     <Compile Remove="Data\**" />
-    <Compile Remove="Migrations\**" />
     <EmbeddedResource Remove="Data\**" />
-    <EmbeddedResource Remove="Migrations\**" />
     <None Remove="Data\**" />
-    <None Remove="Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\DTOs\TopNSoldBookModels.cs" />
+    <Compile Remove="Models\ViewModels\TopNSoldBookModels.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace TechXpress.Data.Models.DTOs;
+namespace TechXpress.Data.Models.ViewModels;
 
 public class UpdateOrderStatusModel
 {

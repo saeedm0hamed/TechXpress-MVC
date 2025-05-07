@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TechXpress.Data.Models
 {
-    [Table("Product")]
     public class Product
     {
         public int Id { get; set; }

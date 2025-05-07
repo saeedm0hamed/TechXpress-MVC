@@ -30,16 +30,16 @@ namespace TechXpress.Services.Repositories
                 var cart = await GetCart(userId);
                 if (cart is null)
                 {
-                    cart = new ShoppingCart
+                    cart = new Cart
                     {
                         UserId = userId
                     };
-                    _db.ShoppingCarts.Add(cart);
+                    _db.Carts.Add(cart);
                 }
                 _db.SaveChanges();
                 // cart detail section
                 var cartItem = _db.CartDetails
-                                  .FirstOrDefault(a => a.ShoppingCartId == cart.Id && a.ProductId == productId);
+                                  .FirstOrDefault(a => a.CartId == cart.Id && a.ProductId == productId);
                 if (cartItem is not null)
                 {
                     cartItem.Quantity += qty;
@@ -50,7 +50,7 @@ namespace TechXpress.Services.Repositories
                     cartItem = new CartDetail
                     {
                         ProductId = productId,
-                        ShoppingCartId = cart.Id,
+                        CartId = cart.Id,
                         Quantity = qty,
                         UnitPrice = product.Price  // it is a new line after update
                     };
@@ -80,7 +80,7 @@ namespace TechXpress.Services.Repositories
                     throw new InvalidOperationException("Invalid cart");
                 // cart detail section
                 var cartItem = _db.CartDetails
-                                  .FirstOrDefault(a => a.ShoppingCartId == cart.Id && a.ProductId == productId);
+                                  .FirstOrDefault(a => a.CartId == cart.Id && a.ProductId == productId);
                 if (cartItem is null)
                     throw new InvalidOperationException("Not items in cart");
                 else if (cartItem.Quantity == 1)
@@ -97,12 +97,12 @@ namespace TechXpress.Services.Repositories
             return cartItemCount;
         }
 
-        public async Task<ShoppingCart> GetUserCart()
+        public async Task<Cart> GetUserCart()
         {
             var userId = GetUserId();
             if (userId == null)
                 throw new InvalidOperationException("Invalid userid");
-            var shoppingCart = await _db.ShoppingCarts
+            var cart = await _db.Carts
                                   .Include(a => a.CartDetails)
                                   .ThenInclude(a => a.Product)
                                   .ThenInclude(a => a.Stock)
@@ -110,12 +110,12 @@ namespace TechXpress.Services.Repositories
                                   .ThenInclude(a => a.Product)
                                   .ThenInclude(a => a.Category)
                                   .Where(a => a.UserId == userId).FirstOrDefaultAsync();
-            return shoppingCart;
+            return cart;
 
         }
-        public async Task<ShoppingCart> GetCart(string userId)
+        public async Task<Cart> GetCart(string userId)
         {
-            var cart = await _db.ShoppingCarts.FirstOrDefaultAsync(x => x.UserId == userId);
+            var cart = await _db.Carts.FirstOrDefaultAsync(x => x.UserId == userId);
             return cart;
         }
 
@@ -125,9 +125,9 @@ namespace TechXpress.Services.Repositories
             {
                 userId = GetUserId();
             }
-            var data = await (from cart in _db.ShoppingCarts
+            var data = await (from cart in _db.Carts
                               join cartDetail in _db.CartDetails
-                              on cart.Id equals cartDetail.ShoppingCartId
+                              on cart.Id equals cartDetail.CartId
                               where cart.UserId == userId // updated line
                               select new { cartDetail.Id }
                         ).ToListAsync();
@@ -148,7 +148,7 @@ namespace TechXpress.Services.Repositories
                 if (cart is null)
                     throw new InvalidOperationException("Invalid cart");
                 var cartDetail = _db.CartDetails
-                                    .Where(a => a.ShoppingCartId == cart.Id).ToList();
+                                    .Where(a => a.CartId == cart.Id).ToList();
                 if (cartDetail.Count == 0)
                     throw new InvalidOperationException("Cart is empty");
                 var pendingRecord = _db.orderStatuses.FirstOrDefault(s => s.StatusName == "Pending");

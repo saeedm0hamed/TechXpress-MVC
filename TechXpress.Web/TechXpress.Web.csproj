@@ -28,6 +28,28 @@
     <None Remove="Views\Reports\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Areas\Identity\Pages\Account\LoginWith2fa.cshtml.cs" />
+    <Compile Remove="Areas\Identity\Pages\Account\LoginWithRecoveryCode.cshtml.cs" />
+    <Compile Remove="Areas\Identity\Pages\Account\Manage\Disable2fa.cshtml.cs" />
+    <Compile Remove="Areas\Identity\Pages\Account\Manage\EnableAuthenticator.cshtml.cs" />
+    <Compile Remove="Areas\Identity\Pages\Account\Manage\ExternalLogins.cshtml.cs" />
+    <Compile Remove="Areas\Identity\Pages\Account\Manage\GenerateRecoveryCodes.cshtml.cs" />
+    <Compile Remove="Areas\Identity\Pages\Account\Manage\ResetAuthenticator.cshtml.cs" />
+    <Compile Remove="Areas\Identity\Pages\Account\Manage\ShowRecoveryCodes.cshtml.cs" />
+    <Compile Remove="Areas\Identity\Pages\Account\Manage\TwoFactorAuthentication.cshtml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Areas\Identity\Pages\Account\LoginWith2fa.cshtml" />
+    <Content Remove="Areas\Identity\Pages\Account\LoginWithRecoveryCode.cshtml" />
+    <Content Remove="Areas\Identity\Pages\Account\Manage\Disable2fa.cshtml" />
+    <Content Remove="Areas\Identity\Pages\Account\Manage\EnableAuthenticator.cshtml" />
+    <Content Remove="Areas\Identity\Pages\Account\Manage\ExternalLogins.cshtml" />
+    <Content Remove="Areas\Identity\Pages\Account\Manage\GenerateRecoveryCodes.cshtml" />
+    <Content Remove="Areas\Identity\Pages\Account\Manage\ResetAuthenticator.cshtml" />
+    <Content Remove="Areas\Identity\Pages\Account\Manage\ShowRecoveryCodes.cshtml" />
+    <Content Remove="Areas\Identity\Pages\Account\Manage\TwoFactorAuthentication.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="9.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.1" />

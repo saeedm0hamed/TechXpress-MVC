@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TechXpress.Data.Models.DTOs;
+using TechXpress.Data.Models.ViewModels;
 
 namespace TechXpress.Services.Repositories
 {
@@ -14,7 +14,7 @@ namespace TechXpress.Services.Repositories
 
         public async Task<Stock?> GetStockByProductId(int productId) => await _context.Stocks.FirstOrDefaultAsync(s => s.ProductId == productId);
 
-        public async Task ManageStock(StockDTO stockToManage)
+        public async Task ManageStock(StockViewModel stockToManage)
         {
             // if there is no stock for given product id, then add new record
             // if there is already stock for given product id, update stock's quantity
@@ -55,6 +55,6 @@ namespace TechXpress.Services.Repositories
     {
         Task<IEnumerable<StockDisplayModel>> GetStocks(string sTerm = "");
         Task<Stock?> GetStockByProductId(int productId);
-        Task ManageStock(StockDTO stockToManage);
+        Task ManageStock(StockViewModel stockToManage);
     }
 }

@@ -38,7 +38,7 @@
 
                    @* appending modal div here *@
                    @* Make sure to put this partial tag inside this td block, otherwise it can cause layout related problem*@
-                   @await Html.PartialAsync("/Views/AdminOperations/_OrderDetailModal.cshtml",new OrderDetailModalDTO{DivId=order.Id.ToString(), OrderDetail=order.OrderDetail})
+                   @await Html.PartialAsync("/Views/AdminOperations/_OrderDetailModal.cshtml",new OrderDetailViewModel{DivId=order.Id.ToString(), OrderDetail=order.OrderDetail})
                     </td>
 
                 </tr>

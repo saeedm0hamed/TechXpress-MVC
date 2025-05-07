@@ -9,7 +9,7 @@ namespace TechXpress.Data.Models
         [Required]
         public int Id { get; set; }
         [Required]
-        public int ShoppingCartId { get; set; }
+        public int CartId { get; set; }
         [Required]
         public int ProductId { get; set; }
         [Required]
@@ -17,6 +17,6 @@ namespace TechXpress.Data.Models
         [Required]
         public double UnitPrice { get; set; }
         public Product Product { get; set; }
-        public ShoppingCart ShoppingCart { get; set; }
+        public Cart Cart { get; set; }
     }
 }

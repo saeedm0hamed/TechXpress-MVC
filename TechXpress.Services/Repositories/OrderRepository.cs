@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TechXpress.Services.Repositories
 {
-    public class UserOrderRepository : IUserOrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly ApplicationDbContext _db;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<IdentityUser> _userManager;
 
 
-        public UserOrderRepository(ApplicationDbContext db,
+        public OrderRepository(ApplicationDbContext db,
             UserManager<IdentityUser> userManager,
              IHttpContextAccessor httpContextAccessor)
         {
@@ -52,7 +52,7 @@ namespace TechXpress.Services.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Order>> UserOrders(bool getAll = false)
+        public async Task<IEnumerable<Order>> Orders(bool getAll = false)
         {
             var orders = _db.Orders
                            .Include(x => x.OrderStatus)
