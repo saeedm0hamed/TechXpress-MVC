@@ -3,35 +3,6 @@
 }
 
 <!-- Add these to your _Layout.cshtml head section -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
-<style>
-    .toast-top-right {
-        top: 70px;
-        right: 12px;
-    }
-
-    .toast-success {
-        background-color: #28a745 !important;
-    }
-
-    .product-details-img {
-        max-height: 300px;
-        width: auto;
-        display: block;
-        margin: 0 auto;
-    }
-
-    .filter-section {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-    }
-
-    .price-range-slider {
-        width: 100%;
-    }
-</style>
 
 <div class="filter-section">
     <form asp-action="Index" method="get" class="row g-3">
@@ -149,13 +120,6 @@
 </div>
 
 @section Scripts {
-    <!-- Add these scripts before your custom scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <!-- Add noUiSlider for price range -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
-
     <script>
         // Initialize price range slider
         document.addEventListener('DOMContentLoaded', function() {

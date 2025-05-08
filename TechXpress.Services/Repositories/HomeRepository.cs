@@ -38,7 +38,6 @@ namespace TechXpress.Services.Repositories
             //             {
             //                 Id = product.Id,
             //                 Image = product.Image,
-            //                 AuthorName = product.AuthorName,
             //                 ProductName = product.ProductName,
             //                 CategoryId = product.CategoryId,
             //                 Price = product.Price,

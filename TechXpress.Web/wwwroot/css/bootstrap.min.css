@@ -24,3 +24,51 @@
     text-decoration: underline !important;
 }
 
+.toast-top-right {
+    top: 70px;
+    right: 12px;
+}
+
+.toast-success {
+    background-color: #28a745 !important;
+}
+
+.product-details-img {
+    max-height: 300px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.filter-section {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.price-range-slider {
+    width: 100%;
+}
+
+footer a:hover {
+    color: #28a745 !important; /* Green color on hover */
+    text-decoration: underline !important;
+}
+
+.social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+    .social-icons a:hover {
+        background-color: #28a745;
+        transform: translateY(-3px);
+    }
+
