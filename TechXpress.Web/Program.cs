@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TechXpress.Data.Repositories;
 using TechXpress.Web;
-using TechXpress.Web.Shared;
+using TechXpress.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

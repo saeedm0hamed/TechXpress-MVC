@@ -1,4 +1,7 @@
-﻿namespace TechXpress.Web.Shared;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+
+namespace TechXpress.Services;
 
 public interface IFileService
 {
