@@ -8,26 +8,24 @@ namespace TechXpress.Web.Controllers;
 [Authorize(Roles = nameof(Roles.Admin))]
 public class ProductController : Controller
 {
-    private readonly IProductRepository _productRepo;
-    private readonly ICategoryRepository _categoryRepo;
+    private readonly IUnitOfWork _UnitOfWork;
     private readonly IFileService _fileService;
 
-    public ProductController(IProductRepository productRepo, ICategoryRepository categoryRepo, IFileService fileService)
+    public ProductController(IUnitOfWork UnitOfWork, IFileService fileService)
     {
-        _productRepo = productRepo;
-        _categoryRepo = categoryRepo;
+        _UnitOfWork = UnitOfWork;
         _fileService = fileService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var products = await _productRepo.GetProducts();
+        var products = await _UnitOfWork.Product.GetProducts();
         return View(products);
     }
 
     public async Task<IActionResult> AddProduct()
     {
-        var categorySelectList = (await _categoryRepo.GetCategorys()).Select(category => new SelectListItem
+        var categorySelectList = (await _UnitOfWork.Category.GetCategorys()).Select(category => new SelectListItem
         {
             Text = category.CategoryName,
             Value = category.Id.ToString(),
@@ -39,7 +37,7 @@ public class ProductController : Controller
     [HttpPost]
     public async Task<IActionResult> AddProduct(ProductViewModel productToAdd)
     {
-        var categorySelectList = (await _categoryRepo.GetCategorys()).Select(category => new SelectListItem
+        var categorySelectList = (await _UnitOfWork.Category.GetCategorys()).Select(category => new SelectListItem
         {
             Text = category.CategoryName,
             Value = category.Id.ToString(),
@@ -70,7 +68,7 @@ public class ProductController : Controller
                 CategoryId = productToAdd.CategoryId,
                 Price = productToAdd.Price
             };
-            await _productRepo.AddProduct(product);
+            await _UnitOfWork.Product.AddProduct(product);
             TempData["successMessage"] = "Product is added successfully";
             return RedirectToAction(nameof(AddProduct));
         }
@@ -93,13 +91,13 @@ public class ProductController : Controller
 
     public async Task<IActionResult> UpdateProduct(int id)
     {
-        var product = await _productRepo.GetProductById(id);
+        var product = await _UnitOfWork.Product.GetProductById(id);
         if (product == null)
         {
             TempData["errorMessage"] = $"Product with the id: {id} does not found";
             return RedirectToAction(nameof(Index));
         }
-        var categorySelectList = (await _categoryRepo.GetCategorys()).Select(category => new SelectListItem
+        var categorySelectList = (await _UnitOfWork.Category.GetCategorys()).Select(category => new SelectListItem
         {
             Text = category.CategoryName,
             Value = category.Id.ToString(),
@@ -119,7 +117,7 @@ public class ProductController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateProduct(ProductViewModel productToUpdate)
     {
-        var categorySelectList = (await _categoryRepo.GetCategorys()).Select(category => new SelectListItem
+        var categorySelectList = (await _UnitOfWork.Category.GetCategorys()).Select(category => new SelectListItem
         {
             Text = category.CategoryName,
             Value = category.Id.ToString(),
@@ -154,7 +152,7 @@ public class ProductController : Controller
                 Price = productToUpdate.Price,
                 Image = productToUpdate.Image
             };
-            await _productRepo.UpdateProduct(product);
+            await _UnitOfWork.Product.UpdateProduct(product);
             // if image is updated, then delete it from the folder too
             if (!string.IsNullOrWhiteSpace(oldImage))
             {
@@ -184,14 +182,14 @@ public class ProductController : Controller
     {
         try
         {
-            var product = await _productRepo.GetProductById(id);
+            var product = await _UnitOfWork.Product.GetProductById(id);
             if (product == null)
             {
                 TempData["errorMessage"] = $"Product with the id: {id} does not found";
             }
             else
             {
-                await _productRepo.DeleteProduct(product);
+                await _UnitOfWork.Product.DeleteProduct(product);
                 if (!string.IsNullOrWhiteSpace(product.Image))
                 {
                     _fileService.DeleteFile(product.Image);

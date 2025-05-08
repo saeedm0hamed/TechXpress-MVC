@@ -6,16 +6,16 @@ namespace TechXpress.Web.Controllers
     [Authorize(Roles = nameof(Roles.Admin))]
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _categoryRepo;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public CategoryController(ICategoryRepository categoryRepo)
+        public CategoryController(IUnitOfWork UnitOfWork)
         {
-            _categoryRepo = categoryRepo;
+            _UnitOfWork = UnitOfWork;
         }
 
         public async Task<IActionResult> Index()
         {
-            var categorys = await _categoryRepo.GetCategorys();
+            var categorys = await _UnitOfWork.Category.GetCategorys();
             return View(categorys);
         }
 
@@ -34,7 +34,7 @@ namespace TechXpress.Web.Controllers
             try
             {
                 var categoryToAdd = new Category { CategoryName = category.CategoryName, Id = category.Id };
-                await _categoryRepo.AddCategory(categoryToAdd);
+                await _UnitOfWork.Category.AddCategory(categoryToAdd);
                 TempData["successMessage"] = "Category added successfully";
                 return RedirectToAction(nameof(AddCategory));
             }
@@ -48,7 +48,7 @@ namespace TechXpress.Web.Controllers
 
         public async Task<IActionResult> UpdateCategory(int id)
         {
-            var category = await _categoryRepo.GetCategoryById(id);
+            var category = await _UnitOfWork.Category.GetCategoryById(id);
             if (category is null)
                 throw new InvalidOperationException($"Category with id: {id} does not found");
             var categoryToUpdate = new CategoryViewModel
@@ -69,7 +69,7 @@ namespace TechXpress.Web.Controllers
             try
             {
                 var category = new Category { CategoryName = categoryToUpdate.CategoryName, Id = categoryToUpdate.Id };
-                await _categoryRepo.UpdateCategory(category);
+                await _UnitOfWork.Category.UpdateCategory(category);
                 TempData["successMessage"] = "Category is updated successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -83,10 +83,10 @@ namespace TechXpress.Web.Controllers
 
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = await _categoryRepo.GetCategoryById(id);
+            var category = await _UnitOfWork.Category.GetCategoryById(id);
             if (category is null)
                 throw new InvalidOperationException($"Category with id: {id} does not found");
-            await _categoryRepo.DeleteCategory(category);
+            await _UnitOfWork.Category.DeleteCategory(category);
             return RedirectToAction(nameof(Index));
 
         }

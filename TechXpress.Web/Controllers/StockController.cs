@@ -6,22 +6,22 @@ namespace TechXpress.Web.Controllers
     [Authorize(Roles = nameof(Roles.Admin))]
     public class StockController : Controller
     {
-        private readonly IStockRepository _stockRepo;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public StockController(IStockRepository stockRepo)
+        public StockController(IUnitOfWork UnitOfWork)
         {
-            _stockRepo = stockRepo;
+            _UnitOfWork = UnitOfWork;
         }
 
         public async Task<IActionResult> Index(string sTerm = "")
         {
-            var stocks = await _stockRepo.GetStocks(sTerm);
+            var stocks = await _UnitOfWork.Stock.GetStocks(sTerm);
             return View(stocks);
         }
 
         public async Task<IActionResult> ManangeStock(int productId)
         {
-            var existingStock = await _stockRepo.GetStockByProductId(productId);
+            var existingStock = await _UnitOfWork.Stock.GetStockByProductId(productId);
             var stock = new StockViewModel
             {
                 ProductId = productId,
@@ -38,7 +38,7 @@ namespace TechXpress.Web.Controllers
                 return View(stock);
             try
             {
-                await _stockRepo.ManageStock(stock);
+                await _UnitOfWork.Stock.ManageStock(stock);
                 TempData["successMessage"] = "Stock is updated successfully.";
             }
             catch (Exception ex)

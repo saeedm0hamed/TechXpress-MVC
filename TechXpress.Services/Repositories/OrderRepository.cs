@@ -4,6 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TechXpress.Services.Repositories
 {
+    public interface IOrderRepository
+    {
+        Task<IEnumerable<Order>> Orders(bool getAll = false);
+        Task ChangeOrderStatus(UpdateOrderStatusModel data);
+        Task TogglePaymentStatus(int orderId);
+        Task<Order?> GetOrderById(int id);
+        Task<IEnumerable<OrderStatus>> GetOrderStatuses();
+
+    }
     public class OrderRepository : IOrderRepository
     {
         private readonly ApplicationDbContext _db;

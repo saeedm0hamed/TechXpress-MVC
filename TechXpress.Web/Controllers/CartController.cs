@@ -6,15 +6,15 @@ namespace TechXpress.Web.Controllers
     [Authorize]
     public class CartController : Controller
     {
-        private readonly ICartRepository _cartRepo;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public CartController(ICartRepository cartRepo)
+        public CartController(IUnitOfWork UnitOfWork)
         {
-            _cartRepo = cartRepo;
+            _UnitOfWork = UnitOfWork;
         }
         public async Task<IActionResult> AddItem(int productId, int qty = 1, int redirect = 0)
         {
-            var cartCount = await _cartRepo.AddItem(productId, qty);
+            var cartCount = await _UnitOfWork.Cart.AddItem(productId, qty);
             if (redirect == 0)
                 return Ok(cartCount);
             return RedirectToAction("GetUserCart");
@@ -22,18 +22,18 @@ namespace TechXpress.Web.Controllers
 
         public async Task<IActionResult> RemoveItem(int productId)
         {
-            var cartCount = await _cartRepo.RemoveItem(productId);
+            var cartCount = await _UnitOfWork.Cart.RemoveItem(productId);
             return RedirectToAction("GetUserCart");
         }
         public async Task<IActionResult> GetUserCart()
         {
-            var cart = await _cartRepo.GetUserCart();
+            var cart = await _UnitOfWork.Cart.GetUserCart();
             return View(cart);
         }
 
         public async Task<IActionResult> GetTotalItemInCart()
         {
-            int cartItem = await _cartRepo.GetCartItemCount();
+            int cartItem = await _UnitOfWork.Cart.GetCartItemCount();
             return Ok(cartItem);
         }
 
@@ -47,7 +47,7 @@ namespace TechXpress.Web.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
-            bool isCheckedOut = await _cartRepo.DoCheckout(model);
+            bool isCheckedOut = await _UnitOfWork.Cart.DoCheckout(model);
             if (!isCheckedOut)
                 return RedirectToAction(nameof(OrderFailure));
             return RedirectToAction(nameof(OrderSuccess));

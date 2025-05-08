@@ -3,7 +3,13 @@ using TechXpress.Data.Models;
 using TechXpress.Data;
 
 namespace TechXpress.Services.Repositories
+    
 {
+    public interface IHomeRepository
+    {
+        Task<IEnumerable<Product>> GetProducts(string sTerm = "", int categoryId = 0);
+        Task<IEnumerable<Category>> Categorys();
+    }
     public class HomeRepository : IHomeRepository
     {
         private readonly ApplicationDbContext _db;

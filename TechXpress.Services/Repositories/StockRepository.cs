@@ -3,6 +3,12 @@ using TechXpress.Data.Models.ViewModels;
 
 namespace TechXpress.Services.Repositories
 {
+    public interface IStockRepository
+    {
+        Task<IEnumerable<StockDisplayModel>> GetStocks(string sTerm = "");
+        Task<Stock?> GetStockByProductId(int productId);
+        Task ManageStock(StockViewModel stockToManage);
+    }
     public class StockRepository : IStockRepository
     {
         private readonly ApplicationDbContext _context;

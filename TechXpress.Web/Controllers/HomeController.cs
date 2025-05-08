@@ -8,18 +8,18 @@ namespace TechXpress.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IHomeRepository _homeRepository;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public HomeController(ILogger<HomeController> logger, IHomeRepository homeRepository)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork UnitOfWork)
         {
-            _homeRepository = homeRepository;
+            _UnitOfWork = UnitOfWork;
             _logger = logger;
         }
 
         public async Task<IActionResult> Index(string sterm = "", int categoryId = 0, string sortBy = "", double? minPrice = null, double? maxPrice = null)  
         {
             // Get all products first
-            IEnumerable<Product> products = await _homeRepository.GetProducts(sterm, categoryId);
+            IEnumerable<Product> products = await _UnitOfWork.Home.GetProducts(sterm, categoryId);
 
             // Apply price filtering if specified
             if (minPrice.HasValue)
@@ -43,7 +43,7 @@ namespace TechXpress.Web.Controllers
             };
 
             // Get categories
-            IEnumerable<Category> categorys = await _homeRepository.Categorys();
+            IEnumerable<Category> categorys = await _UnitOfWork.Home.Categorys();
 
             // Create view model
             ProductDisplayModel productModel = new ProductDisplayModel

@@ -1,13 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechXpress.Data.Models;
 using TechXpress.Data;
-using TechXpress.Services.IRepositories;
+using TechXpress.Services;
 
 namespace TechXpress.Services.Repositories;
-
+public interface ICategoryRepository
+{
+    Task AddCategory(Category category);
+    Task UpdateCategory(Category category);
+    Task<Category?> GetCategoryById(int id);
+    Task DeleteCategory(Category category);
+    Task<IEnumerable<Category>> GetCategorys();
+}
 
 public class CategoryRepository : ICategoryRepository
 {
+    
+
     private readonly ApplicationDbContext _context;
     public CategoryRepository(ApplicationDbContext context)
     {

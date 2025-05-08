@@ -6,15 +6,15 @@ namespace TechXpress.Web.Controllers
     [Authorize]
     public class OrderController : Controller
     {
-        private readonly IOrderRepository _OrderRepo;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public OrderController(IOrderRepository OrderRepo)
+        public OrderController(IUnitOfWork OrderRepo)
         {
-            _OrderRepo = OrderRepo;
+            _UnitOfWork = OrderRepo;
         }
         public async Task<IActionResult> Orders()
         {
-            var orders = await _OrderRepo.Orders();
+            var orders = await _UnitOfWork.Order.Orders();
             return View(orders);
         }
     }

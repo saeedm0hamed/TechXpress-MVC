@@ -8,15 +8,15 @@ namespace TechXpress.Web.Controllers;
 [Authorize(Roles = nameof(Roles.Admin))]
 public class AdminOperationsController : Controller
 {
-    private readonly IOrderRepository _OrderRepository;
-    public AdminOperationsController(IOrderRepository OrderRepository)
+    private readonly IUnitOfWork _UnitOfWork;
+    public AdminOperationsController(IUnitOfWork UnitOfWork)
     {
-        _OrderRepository = OrderRepository;
+        _UnitOfWork = UnitOfWork;
     }
 
     public async Task<IActionResult> AllOrders()
     {
-        var orders = await _OrderRepository.Orders(true);
+        var orders = await _UnitOfWork.Order.Orders(true);
         return View(orders);
     }
 
@@ -24,7 +24,7 @@ public class AdminOperationsController : Controller
     {
         try
         {
-            await _OrderRepository.TogglePaymentStatus(orderId);
+            await _UnitOfWork.Order.TogglePaymentStatus(orderId);
         }
         catch (Exception ex)
         {
@@ -35,12 +35,12 @@ public class AdminOperationsController : Controller
 
     public async Task<IActionResult> UpdateOrderStatus(int orderId)
     {
-        var order = await _OrderRepository.GetOrderById(orderId);
+        var order = await _UnitOfWork.Order.GetOrderById(orderId);
         if (order == null)
         {
             throw new InvalidOperationException($"Order with id:{orderId} does not found.");
         }
-        var orderStatusList = (await _OrderRepository.GetOrderStatuses()).Select(orderStatus =>
+        var orderStatusList = (await _UnitOfWork.Order.GetOrderStatuses()).Select(orderStatus =>
         {
             return new SelectListItem { Value = orderStatus.Id.ToString(), Text = orderStatus.StatusName, Selected = order.OrderStatusId == orderStatus.Id };
         });
@@ -60,14 +60,14 @@ public class AdminOperationsController : Controller
         {
             if (!ModelState.IsValid)
             {
-                data.OrderStatusList = (await _OrderRepository.GetOrderStatuses()).Select(orderStatus =>
+                data.OrderStatusList = (await _UnitOfWork.Order.GetOrderStatuses()).Select(orderStatus =>
                 {
                     return new SelectListItem { Value = orderStatus.Id.ToString(), Text = orderStatus.StatusName, Selected = orderStatus.Id == data.OrderStatusId };
                 });
 
                 return View(data);
             }
-            await _OrderRepository.ChangeOrderStatus(data);
+            await _UnitOfWork.Order.ChangeOrderStatus(data);
             TempData["msg"] = "Updated successfully";
         }
         catch (Exception ex)
