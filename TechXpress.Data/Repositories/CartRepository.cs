@@ -4,7 +4,7 @@ using TechXpress.Data.Models;
 using TechXpress.Data;
 using Microsoft.AspNetCore.Http;
 
-namespace TechXpress.Services.Repositories
+namespace TechXpress.Data.Repositories
 {
     public interface ICartRepository
     {

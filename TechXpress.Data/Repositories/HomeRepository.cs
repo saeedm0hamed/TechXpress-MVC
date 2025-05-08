@@ -2,7 +2,7 @@
 using TechXpress.Data.Models;
 using TechXpress.Data;
 
-namespace TechXpress.Services.Repositories
+namespace TechXpress.Data.Repositories
     
 {
     public interface IHomeRepository

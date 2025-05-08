@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
-namespace TechXpress.Data;
+namespace TechXpress.Web;
 
 public class DbSeeder
 {

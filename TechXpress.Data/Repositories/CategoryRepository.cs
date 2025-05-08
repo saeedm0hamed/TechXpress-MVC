@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechXpress.Data.Models;
 using TechXpress.Data;
-using TechXpress.Services;
 
-namespace TechXpress.Services.Repositories;
+namespace TechXpress.Data.Repositories;
 public interface ICategoryRepository
 {
     Task AddCategory(Category category);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace TechXpress.Services.Repositories
+namespace TechXpress.Data.Repositories
 {
     public interface IUnitOfWork
     {

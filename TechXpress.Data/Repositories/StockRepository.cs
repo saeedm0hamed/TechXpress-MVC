@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechXpress.Data.Models.ViewModels;
 
-namespace TechXpress.Services.Repositories
+namespace TechXpress.Data.Repositories
 {
     public interface IStockRepository
     {

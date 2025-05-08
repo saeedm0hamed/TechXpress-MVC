@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TechXpress.Data.Models.ViewModels;
-using TechXpress.Services.Repositories;
+using TechXpress.Data.Repositories;
 
 namespace TechXpress.Web.Controllers
 {
