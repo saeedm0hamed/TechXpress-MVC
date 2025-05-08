@@ -29,8 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Areas\Identity\Pages\Account\ExternalLogin.cshtml.cs" />
-    <Compile Remove="Areas\Identity\Pages\Account\ForgotPassword.cshtml.cs" />
-    <Compile Remove="Areas\Identity\Pages\Account\ForgotPasswordConfirmation.cshtml.cs" />
     <Compile Remove="Areas\Identity\Pages\Account\LoginWith2fa.cshtml.cs" />
     <Compile Remove="Areas\Identity\Pages\Account\LoginWithRecoveryCode.cshtml.cs" />
     <Compile Remove="Areas\Identity\Pages\Account\Manage\Disable2fa.cshtml.cs" />
@@ -40,12 +38,9 @@
     <Compile Remove="Areas\Identity\Pages\Account\Manage\ResetAuthenticator.cshtml.cs" />
     <Compile Remove="Areas\Identity\Pages\Account\Manage\ShowRecoveryCodes.cshtml.cs" />
     <Compile Remove="Areas\Identity\Pages\Account\Manage\TwoFactorAuthentication.cshtml.cs" />
-    <Compile Remove="Areas\Identity\Pages\Account\ResendEmailConfirmation.cshtml.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Areas\Identity\Pages\Account\ExternalLogin.cshtml" />
-    <Content Remove="Areas\Identity\Pages\Account\ForgotPassword.cshtml" />
-    <Content Remove="Areas\Identity\Pages\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Remove="Areas\Identity\Pages\Account\LoginWith2fa.cshtml" />
     <Content Remove="Areas\Identity\Pages\Account\LoginWithRecoveryCode.cshtml" />
     <Content Remove="Areas\Identity\Pages\Account\Manage\Disable2fa.cshtml" />
@@ -55,7 +50,6 @@
     <Content Remove="Areas\Identity\Pages\Account\Manage\ResetAuthenticator.cshtml" />
     <Content Remove="Areas\Identity\Pages\Account\Manage\ShowRecoveryCodes.cshtml" />
     <Content Remove="Areas\Identity\Pages\Account\Manage\TwoFactorAuthentication.cshtml" />
-    <Content Remove="Areas\Identity\Pages\Account\ResendEmailConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
