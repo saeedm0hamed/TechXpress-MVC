@@ -27,6 +27,8 @@ namespace TechXpress.Data.Models
         [NotMapped]
         public int Quantity { get; set; }
 
+        public string? Description { get; set; }
+
 
     }
 }

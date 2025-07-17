@@ -3,3 +3,4 @@ global using TechXpress.Data.Models;
 global using TechXpress.Data.Models.ViewModels;
 global using TechXpress.Data.Repositories;
 global using TechXpress.Web.Constants;
+global using TechXpress.Services;

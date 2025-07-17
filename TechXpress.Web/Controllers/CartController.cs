@@ -12,9 +12,9 @@ namespace TechXpress.Web.Controllers
         {
             _UnitOfWork = UnitOfWork;
         }
-        public async Task<IActionResult> AddItem(int productId, int qty = 1, int redirect = 0)
+        public async Task<IActionResult> AddItem(int productId, int quantity = 1, int redirect = 0)
         {
-            var cartCount = await _UnitOfWork.Cart.AddItem(productId, qty);
+            var cartCount = await _UnitOfWork.Cart.AddItem(productId, quantity);
             if (redirect == 0)
                 return Ok(cartCount);
             return RedirectToAction("GetUserCart");

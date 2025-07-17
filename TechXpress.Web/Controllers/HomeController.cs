@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using TechXpress.Data.Models.ViewModels;
 using TechXpress.Data.Repositories;
+using TechXpress.Services;
 
 namespace TechXpress.Web.Controllers
 {
@@ -16,7 +18,7 @@ namespace TechXpress.Web.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index(string sterm = "", int categoryId = 0, string sortBy = "", double? minPrice = null, double? maxPrice = null)  
+        public async Task<IActionResult> Index(string sterm = "", int categoryId = 0, string sortBy = "", double? minPrice = null, double? maxPrice = null, int pg = 1)  
         {
             // Get all products first
             IEnumerable<Product> products = await _UnitOfWork.Home.GetProducts(sterm, categoryId);
@@ -45,10 +47,27 @@ namespace TechXpress.Web.Controllers
             // Get categories
             IEnumerable<Category> categorys = await _UnitOfWork.Home.Categorys();
 
+            const int pageSize = 10;
+
+            if (pg < 1) pg = 1;
+
+            int recsCount = products.Count();
+
+            var pager = new Pager(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            var data = products
+                .Skip(recSkip)
+                .Take(pager.PageSize)
+                .ToList();
+
+            this.ViewBag.Pager = pager;
+
             // Create view model
             ProductDisplayModel productModel = new ProductDisplayModel
             {
-                Products = products.ToList(),
+                Products = data,
                 Categorys = categorys,
                 STerm = sterm,
                 CategoryId = categoryId,
@@ -59,7 +78,28 @@ namespace TechXpress.Web.Controllers
 
             return View(productModel);
         }
+        // In your controller (e.g., ProductsController.cs)
+        [HttpGet]
+        public async Task<IActionResult> GetProductDetails(int id)
+        {
+            var product = await _UnitOfWork.Product.GetProductById(id);
 
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                id = product.Id,
+                ProductName = product.ProductName,
+                Description = product.Description ?? "No description available",
+                Price = product.Price,
+                Image = product.Image ?? "NoImage.png",
+                CategoryName = product.Category?.CategoryName ?? "Uncategorized",
+                Quantity = product.Stock?.Quantity ?? 0,
+            });
+        }
         public IActionResult Privacy()
         {
             return View();

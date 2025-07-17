@@ -9,7 +9,7 @@ namespace TechXpress.Data.Repositories
         Task AddProduct(Product product);
         Task UpdateProduct(Product product);
         Task DeleteProduct(Product product);
-        Task<Product?> GetProductById(int id);
+        Task<Product> GetProductById(int id);
         Task<IEnumerable<Product>> GetProducts();
     }
     public class ProductRepository : IProductRepository
@@ -38,7 +38,13 @@ namespace TechXpress.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Product?> GetProductById(int id) => await _context.Products.FindAsync(id);
+        public async Task<Product> GetProductById(int id)
+        {
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Stock)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
 
         public async Task<IEnumerable<Product>> GetProducts() => await _context.Products.Include(a => a.Category).ToListAsync();
     }

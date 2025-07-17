@@ -5,18 +5,18 @@
 <div style="width:50%">
     <h2> Add Product </h2>
     <a asp-action="Index" asp-controller="Product" class="btn btn-primary">Back</a>
-    <form asp-action="AddProduct" enctype="multipart/form-data">
-        @* <input type="hidden" asp-for="Id" /> *@
+    <form asp-action="AddProduct" method="post">
+        <input type="hidden" asp-for="Id" />
 
         <div class="my-2">
-            <label>Product*</label>
+            <label class="form-label">Product*</label>
             <input type="text" class="form-control" asp-for="ProductName" />
             <span asp-validation-for="ProductName" class="text-danger"></span>
         </div>
 
 
         <div class="my-2">
-            <label>Category*</label>
+            <label class="form-label">Category*</label>
             <select class="form-control" asp-for="CategoryId" asp-items="Model.CategoryList">
                 <option value="">Select Category</option>
             </select>
@@ -24,13 +24,19 @@
         </div>
 
         <div class="my-2">
-            <label>Price*</label>
-            <input type="number" class="form-control" asp-for="Price" />
+            <label class="form-label">Price*</label>
+            <input type="number" class="form-control" asp-for="Price" value="0"/>
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" asp-for="Description" style="height: 100px" maxlength="256"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
         <div class="my-2">
-            <label>Image</label>
+            <label class="form-label">Image</label>
             <input type="file" class="form-control" asp-for="ImageFile" />
         </div>
 

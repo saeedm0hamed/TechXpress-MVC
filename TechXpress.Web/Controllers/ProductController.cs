@@ -59,14 +59,14 @@ public class ProductController : Controller
                 string imageName = await _fileService.SaveFile(productToAdd.ImageFile, allowedExtensions);
                 productToAdd.Image = imageName;
             }
-            // manual mapping of ProductViewModel -> Product
             Product product = new()
             {
                 Id = productToAdd.Id,
                 ProductName = productToAdd.ProductName,
                 Image = productToAdd.Image,
                 CategoryId = productToAdd.CategoryId,
-                Price = productToAdd.Price
+                Price = productToAdd.Price,
+                Description = productToAdd.Description
             };
             await _UnitOfWork.Product.AddProduct(product);
             TempData["successMessage"] = "Product is added successfully";
@@ -82,11 +82,13 @@ public class ProductController : Controller
             TempData["errorMessage"] = ex.Message;
             return View(productToAdd);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             TempData["errorMessage"] = "Error on saving data";
             return View(productToAdd);
         }
+        return RedirectToAction(nameof(Index));
+
     }
 
     public async Task<IActionResult> UpdateProduct(int id)
@@ -105,11 +107,13 @@ public class ProductController : Controller
         });
         ProductViewModel productToUpdate = new()
         {
+            Id = product.Id,
             CategoryList = categorySelectList,
             ProductName = product.ProductName,
             CategoryId = product.CategoryId,
             Price = product.Price,
-            Image = product.Image
+            Image = product.Image,
+            Description = product.Description
         };
         return View(productToUpdate);
     }
@@ -126,7 +130,9 @@ public class ProductController : Controller
         productToUpdate.CategoryList = categorySelectList;
 
         if (!ModelState.IsValid)
+        {
             return View(productToUpdate);
+        }           
 
         try
         {
@@ -139,21 +145,19 @@ public class ProductController : Controller
                 }
                 string[] allowedExtensions = [".jpeg", ".jpg", ".png"];
                 string imageName = await _fileService.SaveFile(productToUpdate.ImageFile, allowedExtensions);
-                // hold the old image name. Because we will delete this image after updating the new
                 oldImage = productToUpdate.Image;
                 productToUpdate.Image = imageName;
             }
-            // manual mapping of ProductViewModel -> Product
             Product product = new()
             {
                 Id = productToUpdate.Id,
                 ProductName = productToUpdate.ProductName,
                 CategoryId = productToUpdate.CategoryId,
                 Price = productToUpdate.Price,
-                Image = productToUpdate.Image
+                Image = productToUpdate.Image,
+                Description = productToUpdate.Description
             };
             await _UnitOfWork.Product.UpdateProduct(product);
-            // if image is updated, then delete it from the folder too
             if (!string.IsNullOrWhiteSpace(oldImage))
             {
                 _fileService.DeleteFile(oldImage);
@@ -171,11 +175,14 @@ public class ProductController : Controller
             TempData["errorMessage"] = ex.Message;
             return View(productToUpdate);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             TempData["errorMessage"] = "Error on saving data";
             return View(productToUpdate);
         }
+
+        return RedirectToAction(nameof(Index));
+
     }
 
     public async Task<IActionResult> DeleteProduct(int id)
@@ -194,6 +201,7 @@ public class ProductController : Controller
                 {
                     _fileService.DeleteFile(product.Image);
                 }
+                TempData["successMessage"] = "Product deleted successfully";
             }
         }
         catch (InvalidOperationException ex)
@@ -204,11 +212,10 @@ public class ProductController : Controller
         {
             TempData["errorMessage"] = ex.Message;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             TempData["errorMessage"] = "Error on deleting the data";
         }
         return RedirectToAction(nameof(Index));
     }
-
 }

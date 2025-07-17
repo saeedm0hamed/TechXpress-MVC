@@ -8,7 +8,7 @@ namespace TechXpress.Data.Repositories
 {
     public interface ICartRepository
     {
-        Task<int> AddItem(int productId, int qty);
+        Task<int> AddItem(int productId, int quantity);
         Task<int> RemoveItem(int productId);
         Task<Cart> GetUserCart();
         Task<int> GetCartItemCount(string userId = "");
@@ -28,7 +28,7 @@ namespace TechXpress.Data.Repositories
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<int> AddItem(int productId, int qty)
+        public async Task<int> AddItem(int productId, int quantity)
         {
             string userId = GetUserId();
             using var transaction = _db.Database.BeginTransaction();
@@ -51,7 +51,7 @@ namespace TechXpress.Data.Repositories
                                   .FirstOrDefault(a => a.CartId == cart.Id && a.ProductId == productId);
                 if (cartItem is not null)
                 {
-                    cartItem.Quantity += qty;
+                    cartItem.Quantity += quantity;
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace TechXpress.Data.Repositories
                     {
                         ProductId = productId,
                         CartId = cart.Id,
-                        Quantity = qty,
+                        Quantity = quantity,
                         UnitPrice = product.Price  // it is a new line after update
                     };
                     _db.CartDetails.Add(cartItem);

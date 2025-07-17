@@ -13,7 +13,7 @@
                 <th>Product</th>
                 <th>Image</th>
                 <th>Category</th>
-                <th>Unit Price(USD)</th>
+                <th>Unit Price</th>
                 <th>Total Price</th>
                 <th>Action</th>
             </tr>
@@ -32,8 +32,8 @@
                         }
                     </td>
                     <td>@item.Product.Category.CategoryName</td>
-                    <td>@item.Product.Price X @item.Quantity</td>
-                    <td>@(item.Product.Price * item.Quantity)</td>
+                    <td>$@item.Product.Price × @item.Quantity</td>
+                    <td>$@(Math.Floor(item.Product.Price * item.Quantity * 100) / 100)</td>
                     <td>
                         @* Increase Quantity button should be invisible if not enough stock*@
                         @if (item.Quantity < item.Product.Stock.Quantity)
@@ -52,8 +52,8 @@
         </table>
 
         <div class="my-2">
-            <h5>Total(USD): </h5>
-            @(Model.CartDetails.Select(item => item.Product.Price * item.Quantity).Sum())
+            <h5>Total: </h5>
+            $@(Model.CartDetails.Select(item => item.Product.Price * item.Quantity).Sum())
         </div>
 
         <div class="my-2">
