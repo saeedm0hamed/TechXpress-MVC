@@ -9,6 +9,12 @@ Built as [my](https://www.linkedin.com/posts/saeedm0hamed_%D8%A7%D9%84%D8%AD%D9%
   <img src="/hero.png">
 </div>
 
+<div align="center">
+  <a href="https://www.linkedin.com/posts/saeedm0hamed_depi-digitalegypt-digitalegyptpioneers-activity-7351781320856895488-fiJe?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEdvbmgBbqKej5BdhXCdZ4zffCgiTeg8u2c">
+    <img src="https://img.shields.io/badge/View_Demo-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Preview" />
+  </a>
+</div>
+
 ## 💡 Technologies & Techniques
 <div align="center">
 
